@@ -138,12 +138,18 @@ export default class ClusteredMapView extends PureComponent {
             if (d.properties.point_count === 0)
               return this.props.renderMarker(d.properties.item)
 
+            const clusterItems = this.index.getLeaves(
+              d.properties.cluster_id,
+              this.props.clusterPressMaxChildren
+            );
+
             return (
               <ClusterMarker
                 {...d}
                 onPress={this.onClusterPress}
-                renderCluster={this.props.renderCluster}
-                key={`cluster-${d.properties.cluster_id}`} />
+                renderCluster={(cluster, onPress) => this.props.renderCluster({ ...cluster, items: clusterItems }, onPress)}
+                key={`cluster-${d.properties.cluster_id}`}
+                items={clusterItems} />
             )
           })
         }
@@ -200,3 +206,4 @@ ClusteredMapView.propTypes = {
   // mutiple
   accessor: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
 }
+
